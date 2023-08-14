@@ -1,0 +1,6 @@
+{
+    "name" :"Name",
+    "email" : "Email",
+    "age":"Age",
+    "phone":"Phone"
+}
