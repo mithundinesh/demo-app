@@ -17,7 +17,7 @@ export default function LanguagePage({ data }) {
         if (lang === "en")
             router.push({ pathname: `/final/${data.name}/${data.email}/${data.age}/${data.phone}` }, "", { locale: lang })
         else
-            router.push({ pathname: `bm/final/${data.name}/${data.email}/${data.age}/${data.phone}` }, "", { locale: lang })
+            router.push({ pathname: `bm/${data.name}/${data.email}/${data.age}/${data.phone}` }, "", { locale: lang })
 
     }
     return (

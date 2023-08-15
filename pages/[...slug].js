@@ -24,7 +24,7 @@ export default function FinalPage() {
 
     useEffect(() => {
 
-        router.push({ pathname: `/final/${data[0]}/${data[1]}/${data[2]}/${data[3]}` }, "", { locale: lang })
+        router.push({ pathname: `/${data[0]}/${data[1]}/${data[2]}/${data[3]}` }, "", { locale: lang })
 
     }, [lang])
 
