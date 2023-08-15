@@ -6,6 +6,7 @@ import Button from '@mui/material/Button';
 import { useRouter } from "next/router";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import axios from "axios";
 
 
 export default function LanguagePage({ data }) {
@@ -13,7 +14,10 @@ export default function LanguagePage({ data }) {
     const [lang, setLang] = useState("en")
     const submitHandler = () => {
         const params = { data, lang }
-        router.push({ pathname: `/final/${data.name}/${data.email}/${data.age}/${data.phone}/${lang}` })
+        if (lang === "en")
+            router.push({ pathname: `/final/${data.name}/${data.email}/${data.age}/${data.phone}` }, "", { locale: lang })
+        else
+            router.push({ pathname: `bm/final/${data.name}/${data.email}/${data.age}/${data.phone}` }, "", { locale: lang })
 
     }
     return (
@@ -39,9 +43,10 @@ export default function LanguagePage({ data }) {
 }
 
 export async function getServerSideProps({ params, query, req, res }) {
-    // const lang = await require("../locales/" + query.locale + "/common.json")
+
+    const response = await axios.get("http://localhost:3000/api/data");
 
 
-    return { props: { data: query ?? 0 } }
+    return { props: { data: JSON.parse(response.data) } }
 }
 

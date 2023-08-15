@@ -6,6 +6,7 @@ import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
 import { useRouter } from "next/router";
+import axios from "axios";
 
 
 export default function DetailsPage({ data }) {
@@ -16,11 +17,23 @@ export default function DetailsPage({ data }) {
     const [phone, setPhone] = useState("")
     const [error, setError] = useState(null)
 
-    const nextHandler = () => {
-        if (age && phone)
-            router.push({ pathname: "/language", query: { name: data?.name, email: data?.email, age, phone } })
-        else setError("Please fill input fields")
+    const nextHandler = async () => {
+        try {
+            if (age && phone) {
+                const res = await axios.post("/api/data", { name: data.name, email: data.email, age, phone })
+                if (res.status === 200) {
+                    router.push("/language")
+                }
+            } else {
+                setError("Please fill input fields")
+            }
+        }
+        catch (e) {
+            // error
+        }
     }
+
+
 
     return (
         <RootLayout>
@@ -61,6 +74,9 @@ export default function DetailsPage({ data }) {
 
 export async function getServerSideProps({ params, query, req, res }) {
 
-    return { props: { data: query ?? 0 } }
+    const response = await axios.get("http://localhost:3000/api/data");
+
+
+    return { props: { data: JSON.parse(response.data) } }
 }
 

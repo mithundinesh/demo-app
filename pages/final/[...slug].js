@@ -5,23 +5,26 @@ import InputLabel from '@mui/material/InputLabel';
 import { useRouter } from "next/router";
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 export default function FinalPage() {
     const router = useRouter();
+    const { locale } = useRouter();
+    const { t } = useTranslation('common')
+    const data = router.query.slug
 
-    const [lang, setLang] = useState("en")
-    const [locale, setLocale] = useState({})
-
-    useEffect(() => {
-
-        setLang(router.query.slug[4])
-
-    }, [router.query.slug])
+    const [lang, setLang] = useState("")
 
     useEffect(() => {
 
-        const localeTemp = require("../../locales/" + lang + "/common.json")
-        setLocale(localeTemp)
+        setLang(locale)
+
+    }, [locale])
+
+    useEffect(() => {
+
+        router.push({ pathname: `/final/${data[0]}/${data[1]}/${data[2]}/${data[3]}` }, "", { locale: lang })
 
     }, [lang])
 
@@ -43,10 +46,10 @@ export default function FinalPage() {
                     </Select>
                 </FormControl>
                 <div className="m-4">
-                    <div className="flex"><p className="font-bold basis-1/2">{locale.name} : </p> {router.query.slug[0]}</div>
-                    <div className="flex"><p className="font-bold basis-1/2">{locale.email} : </p> {router.query.slug[1]}</div>
-                    <div className="flex"><p className="font-bold basis-1/2">{locale.age} : </p> {router.query.slug[2]}</div>
-                    <div className="flex"><p className="font-bold basis-1/2">{locale.phone} : </p> {router.query.slug[3]}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("name")} : </p> {data[0]}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("email")} : </p> {data[1]}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("age")} : </p> {data[2]}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("phone")} : </p> {data[3]}</div>
                 </div>
 
 
@@ -54,6 +57,15 @@ export default function FinalPage() {
         </RootLayout>
     );
 }
+export const getServerSideProps = async ({ locale }) => {
+    return {
+        props: {
+            ...(await serverSideTranslations(locale, ["common"])),
+        },
+    };
+};
+
+
 
 
 

@@ -6,16 +6,28 @@ import Input from '@mui/material/Input';
 import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
 import Router from "next/router";
+import axios from "axios";
 
 export default function Index() {
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [error, setError] = useState(null)
 
-    const nextHandler = () => {
-        if (name && email)
-            Router.push({ pathname: "/details", query: { name, email, locale: "en" } }, '/details')
-        else setError("Please fill input fields")
+    const nextHandler = async () => {
+        try {
+            if (name && email) {
+                const res = await axios.post("/api/data", { name, email, })
+                if (res.status === 200) {
+                    Router.push("/details")
+                }
+            } else {
+                setError("Please fill input fields")
+            }
+        }
+        catch (e) {
+            // error
+        }
+
     }
     return (
         <RootLayout>
