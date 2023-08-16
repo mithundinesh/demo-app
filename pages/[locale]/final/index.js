@@ -7,26 +7,24 @@ import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import axios from "axios";
 
-export default function FinalPage() {
+export default function FinalPage({ data }) {
     const router = useRouter();
-    const { locale } = useRouter();
-    const { t } = useTranslation('common')
-    const data = router.query.slug
+    // const { locale } = useRouter();
+    const { locale } = router.query
+    const { t, i18n } = useTranslation('common')
 
     const [lang, setLang] = useState("")
 
     useEffect(() => {
+        if (lang)
+            router.push({ pathname: `/${lang}/final` }, "", { locale: lang === "english" ? "en" : "bm" })
+        else
+            setLang(locale)
 
-        setLang(locale)
+    }, [locale, lang])
 
-    }, [locale])
-
-    useEffect(() => {
-
-        router.push({ pathname: `/${data[0]}/${data[1]}/${data[2]}/${data[3]}` }, "", { locale: lang })
-
-    }, [lang])
 
 
 
@@ -41,15 +39,15 @@ export default function FinalPage() {
                         label="Language"
                         onChange={(e) => setLang(e.target.value)}
                     >
-                        <MenuItem value="en">EN</MenuItem>
-                        <MenuItem value="bm">BM</MenuItem>
+                        <MenuItem value="english">EN</MenuItem>
+                        <MenuItem value="bambara">BM</MenuItem>
                     </Select>
                 </FormControl>
                 <div className="m-4">
-                    <div className="flex"><p className="font-bold basis-1/2">{t("name")} : </p> {data[0]}</div>
-                    <div className="flex"><p className="font-bold basis-1/2">{t("email")} : </p> {data[1]}</div>
-                    <div className="flex"><p className="font-bold basis-1/2">{t("age")} : </p> {data[2]}</div>
-                    <div className="flex"><p className="font-bold basis-1/2">{t("phone")} : </p> {data[3]}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("name")} : </p> {data.name}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("email")} : </p> {data.email}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("age")} : </p> {data.age}</div>
+                    <div className="flex"><p className="font-bold basis-1/2">{t("phone")} : </p> {data.phone}</div>
                 </div>
 
 
@@ -58,9 +56,11 @@ export default function FinalPage() {
     );
 }
 export const getServerSideProps = async ({ locale }) => {
+    const response = await axios.get("http://localhost:3000/api/data");
     return {
         props: {
             ...(await serverSideTranslations(locale, ["common"])),
+            data: JSON.parse(response.data)
         },
     };
 };

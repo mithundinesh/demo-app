@@ -11,13 +11,14 @@ import axios from "axios";
 
 export default function LanguagePage({ data }) {
     const router = useRouter()
-    const [lang, setLang] = useState("en")
+    const [lang, setLang] = useState("english")
+    const { pathname, asPath, query } = router
+    console.log({ pathname, asPath, query })
     const submitHandler = () => {
-        const params = { data, lang }
-        if (lang === "en")
-            router.push({ pathname: `/final/${data.name}/${data.email}/${data.age}/${data.phone}` }, "", { locale: lang })
-        else
-            router.push({ pathname: `bm/${data.name}/${data.email}/${data.age}/${data.phone}` }, "", { locale: lang })
+
+
+        router.push({ pathname: `/${lang}/final` }, "", { locale: lang === "bambara" ? "bm" : "en" })
+
 
     }
     return (
@@ -32,8 +33,8 @@ export default function LanguagePage({ data }) {
                         label="Language"
                         onChange={(e) => setLang(e.target.value)}
                     >
-                        <MenuItem value="en">EN</MenuItem>
-                        <MenuItem value="bm">BM</MenuItem>
+                        <MenuItem value="english">EN</MenuItem>
+                        <MenuItem value="bambara">BM</MenuItem>
                     </Select>
                 </FormControl>
                 <Button onClick={submitHandler} variant="outlined">Submit</Button>
